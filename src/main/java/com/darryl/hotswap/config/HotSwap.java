@@ -1,4 +1,4 @@
-package com.darryl.hotswap;
+package com.darryl.hotswap.config;
 
 import java.io.File;
 import java.net.URL;
@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: darrylsun
@@ -15,13 +16,15 @@ import lombok.extern.slf4j.Slf4j;
  * @Date: 2021/06/10
  */
 @Slf4j
+@Component
 public class HotSwap {
 
     private static final long LOADER_INTERVAL = 3;
     private static URLClassLoader classLoader;
 
-    // 可动态配置获取，同时可以是一个列表不单单是一个jar
-    private static final String HOT_UPDATE_JAR_PATH = "";
+    // 可动态配置获取，同时可以是一个列表不单单是一个jar，此处写死简单处理
+    // 这里需要写明需要热加载的jar路径
+    private static final String HOT_UPDATE_JAR_PATH = "/Users/****/test/target/test-1.0.0-SNAPSHOT.jar";
     // 可以用更新时间或者jar包的MD5串进行匹配校验，此处简单处理，可以从DB中动态获取
     private static Long currentJarTime = 0L;
 
@@ -38,7 +41,7 @@ public class HotSwap {
     }
 
     // 动态获取新实例，注意返回值可能为null，调用者要加判断
-    public static Object newInstance(String className) {
+    public Object newInstance(String className) {
         if (classLoader != null) {
             try {
                 synchronized (HotSwap.class) {
